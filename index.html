@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude с нуля — гайд для новичков · fridmanlizaveta</title>
+<meta name="description" content="Гайд для новичков: от регистрации в Claude до первых результатов. Формула запроса, проекты, файлы, скиллы и 9 готовых промптов.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111;--text:#3a3a3a;--muted:#8a8a8a;--line:#e6e6e6;--soft:#f5f5f5;--code:#111;--code-text:#f2f2f2;
+  --f-text:'Inter',system-ui,sans-serif;--f-mono:'JetBrains Mono',ui-monospace,monospace}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--f-text);background:#fff;color:var(--ink);font-size:17px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+.nav{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
+.nav__in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.nav__nick{font:600 14px var(--f-text);color:var(--ink);text-decoration:none;flex:none}
+.nav__links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav__links::-webkit-scrollbar{display:none}
+.nav__links a{font:500 13px var(--f-text);color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:6px;white-space:nowrap}
+.nav__links a:hover{color:var(--ink);background:var(--soft)}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+.badge{display:inline-block;font:600 12px var(--f-text);letter-spacing:2px;text-transform:uppercase;border:1.5px solid var(--ink);padding:5px 14px;border-radius:999px}
+.hero{padding:64px 0 36px}
+.hero h1{font:800 56px/1.1 var(--f-text);letter-spacing:-.03em;margin:22px 0 12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hero h1 img{width:52px;height:52px}
+.hero__sub{font:500 22px/1.4 var(--f-text);color:var(--text)}
+.hero__meta{font:14px var(--f-text);color:var(--muted);margin-top:14px}
+.ph{border:1.5px dashed #c8c8c8;border-radius:12px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;margin:20px 0 26px;padding:20px;color:var(--muted)}
+.ph b{font:600 12px var(--f-text);letter-spacing:2px;text-transform:uppercase;color:var(--ink)}
+.ph span{font-size:14px}
+.ph--wide{aspect-ratio:16/9}
+.ph--cover{aspect-ratio:16/10;margin-top:32px}
+.intro p{color:var(--text);margin-bottom:14px}
+.intro .lead{font-size:19px;color:var(--ink)}
+.sel{background:var(--ink);color:#fff;padding:0 .16em;border-radius:4px;white-space:nowrap}
+.cap{font:700 17px var(--f-text);color:var(--ink)!important;margin:26px 0 6px!important}
+.get{display:block;margin:0 0 14px}
+.get div{position:relative;padding:5px 0 5px 30px;color:var(--text)}
+.get div::before{content:"✓";position:absolute;left:0;top:5px;font-weight:700;color:var(--ink)}
+.how b{font-weight:700;color:var(--ink);margin-right:6px}
+section.s{padding-top:48px;margin-top:48px;border-top:1px solid var(--line);scroll-margin-top:60px}
+.s__num{font:600 13px var(--f-text);letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.s h2{font:800 36px/1.2 var(--f-text);letter-spacing:-.02em;margin:8px 0 20px}
+.s h3{font:700 23px/1.35 var(--f-text);margin:38px 0 10px}
+.s h4{font:700 18px var(--f-text);margin:28px 0 8px}
+.s p{color:var(--text);margin-bottom:14px}
+.s strong{color:var(--ink);font-weight:600}
+.s ul.dots,.s ol.nums{margin:6px 0 18px 22px;color:var(--text)}
+.s ul.dots li,.s ol.nums li{padding:3px 0 3px 4px}
+.note{background:var(--soft);border-radius:10px;padding:16px 20px;margin:20px 0;color:var(--text);font-size:16px}
+.note__label{font:700 12px var(--f-text);letter-spacing:2px;text-transform:uppercase;color:var(--ink);margin-bottom:2px}
+.tbl{margin:16px 0 22px;overflow-x:auto}
+.tbl table{width:100%;border-collapse:collapse;font-size:15.5px}
+.tbl th{font:700 13px var(--f-text);text-align:left;padding:10px 14px;border-bottom:2px solid var(--ink)}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--text);vertical-align:top;line-height:1.55}
+.tbl td:first-child{color:var(--ink);font-weight:600}
+.prompt{background:var(--code);border-radius:12px;margin:16px 0 24px;overflow:hidden}
+.prompt__hd{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-bottom:1px solid #2a2a2a}
+.prompt__hd span{font:500 12px var(--f-mono);color:#9a9a9a}
+.copy{font:600 12px var(--f-text);background:#fff;color:#111;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;flex:none}
+.copy:hover{background:#e8e8e8}
+.copy.ok{background:#9be3a9}
+.prompt__bd{padding:20px 22px;font:14px/1.75 var(--f-mono);color:var(--code-text);white-space:pre-wrap}
+.prompt__bd mark{background:#3b3b3b;color:#ffd27a;border-radius:3px;padding:0 3px}
+.prompt--bad{background:#f2f2f2}
+.prompt--bad .prompt__hd{border-color:var(--line)}
+.prompt--bad .prompt__bd{color:#777}
+.prompt--bad .copy{background:#111;color:#fff}
+.tag{display:inline-block;font:700 14px var(--f-text);margin:8px 0 0}
+.tag--bad{color:var(--muted)}
+.lib__group{font:800 14px var(--f-text);letter-spacing:2px;text-transform:uppercase;margin:44px 0 0;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.lib h3 .n{color:var(--muted);margin-right:8px;font-weight:600}
+.mistake{padding:12px 0 12px 44px;position:relative;border-bottom:1px solid var(--line)}
+.mistake:last-child{border-bottom:0}
+.mistake::before{content:attr(data-n);position:absolute;left:0;top:12px;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font:700 14px/30px var(--f-text);text-align:center}
+.mistake b{display:block;color:var(--ink);font-weight:700;margin-bottom:2px}
+.mistake p{margin:0}
+.check label{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer;line-height:1.5}
+.check input{appearance:none;flex:none;width:22px;height:22px;border:2px solid var(--ink);border-radius:5px;margin-top:1px;display:grid;place-content:center;cursor:pointer}
+.check input::after{content:"✓";font:700 14px var(--f-text);color:#fff;transform:scale(0);transition:transform .15s}
+.check input:checked{background:var(--ink)}
+.check input:checked::after{transform:scale(1)}
+.check input:checked+span{color:var(--muted);text-decoration:line-through}
+.check__done{font:700 18px var(--f-text);margin:18px 0 0;color:var(--ink)!important}
+.final{margin-top:48px;padding-top:48px;border-top:1px solid var(--line)}
+.final h2{font:800 36px/1.2 var(--f-text);letter-spacing:-.02em;margin:8px 0 18px}
+.final p{color:var(--text);margin-bottom:12px}
+.final ul{margin:6px 0 22px 22px;color:var(--text)}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--f-text);text-decoration:none;border-radius:8px;padding:14px 24px;background:var(--ink);color:#fff}
+.btn:hover{background:#333}
+.btn--line{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.btn--line:hover{background:var(--soft)}
+.final__qr{display:flex;align-items:center;gap:14px;margin:4px 0 8px}
+.final__qr img{width:96px;height:96px}
+.final__qr span{font-size:14px;color:var(--muted);max-width:200px}
+.final__bye{margin-top:20px}
+.foot{max-width:760px;margin:48px auto 0;padding:20px 24px 48px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+@media (max-width:760px){
+  body{font-size:16px}
+  .hero h1{font-size:38px}.hero h1 img{width:36px;height:36px}
+  .hero__sub{font-size:18px}
+  .s h2,.final h2{font-size:28px}
+  .s h3{font-size:20px}
+  .tbl table{min-width:520px}
+  .nav__nick{display:none}
+}
+.shot{margin:20px 0 26px}.shot img{display:block;max-width:100%;height:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.06);margin:0 auto}.shot figcaption{font-size:14px;color:var(--text);text-align:center;margin-top:10px}
+.cover{display:block;width:100%;max-width:520px;height:auto;margin:32px auto 0;-webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 98%),linear-gradient(to right,transparent 0,#000 12%,#000 88%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(to bottom,#000 62%,transparent 98%),linear-gradient(to right,transparent 0,#000 12%,#000 88%,transparent 100%);mask-composite:intersect}
+.final__qr .final__me{width:150px;height:auto;border-radius:12px}
+.heart{display:inline-block;width:1em;height:1em;vertical-align:-.12em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav__in">
+  <a class="nav__nick" href="https://t.me/fridmanlizaveta" target="_blank" rel="noopener">fridmanlizaveta</a>
+  <div class="nav__links">
+    <a href="#what">что такое claude</a><a href="#step1">шаг 1</a><a href="#step2">шаг 2</a><a href="#step3">шаг 3</a>
+    <a href="#step4">шаг 4</a><a href="#step5">шаг 5</a><a href="#prompts">промпты</a><a href="#check">чек-лист</a>
+  </div>
+</div></nav>
+
+
+
+<div class="wrap">
+  <header class="hero">
+    <span class="badge">гайд для новичков</span>
+    <h1><img src="img/claude.svg" alt="">Claude с нуля</h1>
+    <p class="hero__sub">От регистрации до первых результатов</p>
+    <p class="hero__meta">≈ 1 час · 5 шагов · 9 готовых промптов · без кода и английского</p>
+    <img class="cover" src="img/cover.webp" alt="Елизавета Фридман">
+  </header>
+  <div class="intro">
+    <p class="lead">Если ты давно хотел(а) разобраться с нейросетями, но каждый раз откладывал(а), потому что «там сложно» и «это для айтишников», этот гайд для тебя.</p>
+    <p>Здесь нет теории ради теории. Только то, что нужно сделать руками, чтобы уже сегодня Claude писал за тебя тексты, разбирал документы и помогал с делами. Код знать не нужно. Английский тоже.</p>
+    <p class="cap">Что ты получишь к концу гайда:</p>
+    <div class="get">
+      <div>настроенный аккаунт Claude, который помнит, кто ты</div>
+      <div>простую формулу, по которой ИИ понимает тебя с первого раза</div>
+      <div>своё рабочее пространство под постоянную задачу</div>
+      <div>9 готовых промптов, которые можно копировать и сразу использовать</div>
+    </div>
+    <p class="how"><b>Как проходить:</b>по порядку, шаг за шагом. Весь гайд займёт около часа. Сохрани его, чтобы возвращаться к промптам.</p>
+  </div>
+
+  <!-- ЧТО ТАКОЕ CLAUDE -->
+  <section class="s" id="what">
+    <div class="s__num">начнём</div>
+    <h2>Что такое Claude и почему с него стоит начать</h2>
+    <p>Claude — это ИИ-ассистент от компании Anthropic. Ты пишешь ему обычным языком, как коллеге в мессенджере, а он отвечает: пишет, объясняет, считает, разбирает файлы, создаёт документы.</p>
+    <p>Представь очень толкового коллегу, который:</p>
+    <ul class="dots">
+      <li>не устаёт и не обижается на десятую правку;</li>
+      <li>читает 50-страничный документ за минуту;</li>
+      <li>умеет и в тексты, и в таблицы, и в презентации.</li>
+    </ul>
+    <div class="note"><div class="note__label">одно «но»</div><strong>Он не умеет читать мысли.</strong> Качество ответа почти всегда зависит от того, как ты поставишь задачу. Этому посвящён шаг 2, и это самая важная часть гайда.</div>
+  </section>
+
+  <!-- ШАГ 1 -->
+  <section class="s" id="step1">
+    <div class="s__num">шаг 1</div>
+    <h2>Регистрация и три <span class="sel">настройки</span></h2>
+
+    <h3>1.1. Создай аккаунт</h3>
+    <p>Зайди на <strong>claude.ai</strong> и зарегистрируйся через почту или Google-аккаунт. Система может попросить подтвердить номер телефона.</p>
+    <div class="note note--warn"><div class="note__label">важно</div>Claude доступен не во всех странах. Если регистрация не проходит, проверь, есть ли твоя страна в списке поддерживаемых на сайте Anthropic.</div>
+    <figure class="shot"><img src="img/shot-register.webp" alt="Страница входа на claude.ai" loading="lazy"><figcaption>1 — вход через Google, 2 — или через почту</figcaption></figure>
+    <p>Бесплатного тарифа хватит, чтобы пройти весь гайд и попробовать Claude в деле. Если появятся вопросы по тарифам, пиши мне, подскажу.</p>
+
+    <h3>1.2. Разберись с выбором модели</h3>
+    <p>В окне чата есть переключатель моделей. Это как разные «уровни мозга» одного Claude:</p>
+    <div class="tbl"><table>
+      <tr><th>Модель</th><th>Когда брать</th></tr>
+      <tr><td>Fable</td><td>Самая мощная модель Claude. Для самых сложных и объёмных задач, где важно максимальное качество</td></tr>
+      <tr><td>Opus</td><td>Сложные задачи: анализ, большие тексты, стратегия, код</td></tr>
+      <tr><td>Sonnet</td><td>Повседневная работа: посты, письма, быстрые вопросы. Отвечает быстрее</td></tr>
+      <tr><td>Haiku</td><td>Очень простые и короткие задачи</td></tr>
+    </table></div>
+    <p>Номера версий у моделей регулярно обновляются, а логика остаётся той же.</p>
+
+    <h4>Какие модели доступны на каком тарифе</h4>
+    <div class="tbl"><table>
+      <tr><th>Тариф</th><th>Что важно знать</th></tr>
+      <tr><td>Free (бесплатный)</td><td>Хватит, чтобы познакомиться с Claude и пройти этот гайд. Выбор моделей меньше, Fable недоступна</td></tr>
+      <tr><td>Pro</td><td>Больше лимитов и доступ к сильным моделям. Fable можно выбрать, но она не входит в лимиты тарифа и оплачивается отдельно, из дополнительных кредитов</td></tr>
+      <tr><td>Max</td><td>Тариф для тех, кто работает с Claude каждый день и много. Fable входит в тариф: на неё можно тратить до половины недельных лимитов без доплаты</td></tr>
+    </table></div>
+    <p>Если хочешь регулярно работать с Fable, удобнее всего тариф Max.</p>
+    <figure class="shot"><img src="img/shot-models.webp" alt="Переключатель моделей в окне чата" loading="lazy"><figcaption>1 — нажми на название модели, 2 — выбери нужную</figcaption></figure>
+
+    <h3>1.3. Включи память</h3>
+    <p>Открой <strong>Настройки → Память</strong> (Settings → Memory) и включи переключатели «Поиск и использование чатов» и «Создание памяти на основе чатов». Claude начнёт запоминать важное из ваших разговоров: как тебя зовут, чем ты занимаешься, как тебе удобнее получать ответы. Там же можно посмотреть и отредактировать, что именно он запомнил.</p>
+    <figure class="shot"><img src="img/shot-memory.webp" alt="Настройки → Память" loading="lazy"><figcaption>1 — Настройки → Память, 2 и 3 — включи оба переключателя</figcaption></figure>
+
+    <h3>1.4. Познакомься с Claude</h3>
+    <p>Отправь первое сообщение. Не формальное «привет», а нормальное знакомство: так память сразу начнёт работать на тебя.</p>
+    <div class="prompt"><div class="prompt__hd"><span>промпт · знакомство</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Привет! Давай знакомиться. Меня зовут [имя], я [чем занимаешься].
+Чаще всего мне нужна помощь с [2–3 задачи: тексты, планирование, учёба…].
+Мне удобнее, когда ответы [короткие и по делу / подробные, с примерами].
+Запомни это, пожалуйста. И расскажи, чем ты можешь быть мне полезен.</div></div>
+    <p>Если в ответ пришёл список того, чем Claude может помочь именно тебе, всё настроено. Идём дальше.</p>
+  </section>
+
+  <!-- ШАГ 2 -->
+  <section class="s" id="step2">
+    <div class="s__num">шаг 2 · самое важное</div>
+    <h2>Формула запроса: как говорить с ИИ, чтобы он <span class="sel">понял</span></h2>
+    <p>Главная ошибка новичка звучит так: «Напиши пост». Claude напишет. Но это будет средний пост ни о чём, потому что он не знает, кто ты, кому пишешь и зачем.</p>
+    <p>Нейросеть работает только с тем, что ты ей дал. Мало информации на входе — средний результат на выходе.</p>
+
+    <h3>Пять вопросов, на которые должен отвечать твой запрос</h3>
+    <p>Перед тем как отправить задачу, мысленно пройдись по пяти пунктам:</p>
+    <div class="tbl"><table>
+      <tr><th>Вопрос</th><th>Что написать</th><th>Пример</th></tr>
+      <tr><td>Кто?</td><td>Какую роль сыграть Claude</td><td>«Ты опытный SMM-специалист»</td></tr>
+      <tr><td>Что?</td><td>Конкретный результат</td><td>«Напиши 3 варианта поста»</td></tr>
+      <tr><td>Для кого?</td><td>Кто будет читать</td><td>«Для девушек 25–35, которые следят за ногтями, но жалеют времени на салон»</td></tr>
+      <tr><td>Как?</td><td>Тон, стиль, ограничения</td><td>«Легко, с юмором, без слов "уникальный" и "лучший"»</td></tr>
+      <tr><td>В каком виде?</td><td>Формат ответа</td><td>«Каждый пост до 600 знаков, с первой цепляющей фразой»</td></tr>
+    </table></div>
+    <p>Не обязательно каждый раз заполнять все пять пунктов. Но чем больше из них в запросе, тем точнее ответ.</p>
+
+    <h3>Посмотри на разницу</h3>
+    <div class="vs">
+      <div>
+        <span class="tag tag--bad">так себе</span>
+        <div class="prompt prompt--bad"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Напиши пост про маникюр.</div></div>
+      </div>
+      <div>
+        <span class="tag tag--good">рабочий вариант</span>
+        <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Ты опытный SMM-специалист для бьюти-мастеров.
+Напиши 3 варианта поста для Instagram мастера маникюра.
+Читают девушки 25–35 лет: следят за собой, но вечно не успевают в салон.
+Главная мысль: покрытие держится 4 недели, поэтому приходить можно реже.
+Тон лёгкий, тёплый, с долей юмора. Без слов «уникальный», «лучший», «качественный».
+Каждый пост до 600 знаков, первая фраза должна цеплять.</div></div>
+      </div>
+    </div>
+    <p>Первый запрос даст шаблонный текст, который можно найти где угодно. Второй даст текст, который уже почти можно публиковать.</p>
+    <figure class="shot"><img src="img/shot-answer.webp" alt="Ответ Claude на рабочий запрос" loading="lazy"><figcaption>Ответ Claude на рабочий запрос</figcaption></figure>
+
+    <h3>Приём, который меняет всё: пусть Claude спросит сам</h3>
+    <p>Не знаешь, что написать в запросе? Переложи это на Claude. Добавь в конце любой задачи одну фразу:</p>
+    <div class="prompt"><div class="prompt__hd"><span>добавь в конец запроса</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Прежде чем отвечать, задай мне 3–5 вопросов, которые помогут
+сделать результат точнее. Начинай работу только после моих ответов.</div></div>
+    <p>Claude сам спросит то, о чём ты даже не подумал(а). Это лучший способ быстро научиться ставить задачи: через неделю ты начнёшь сразу писать запросы так, что вопросов почти не останется.</p>
+
+    <h3>Три правила спокойной работы с ИИ</h3>
+    <div class="mistakes">
+      <div class="mistake" data-n="1"><b>Первый ответ — это черновик.</b><p>Не ищи идеал с первой попытки. Скажи, что не так: «короче», «проще», «убери пафос», «добавь конкретики». Обычно 2–3 правки, и результат готов.</p></div>
+      <div class="mistake" data-n="2"><b>Продолжай в том же чате.</b><p>Внутри одного разговора Claude помнит всё, что вы обсудили. Не нужно заново объяснять задачу, достаточно написать: «Второй вариант нравится, сделай его на треть короче».</p></div>
+      <div class="mistake" data-n="3"><b>Дай образец.</b><p>Иногда проще показать, чем описать. Вставь пример текста, который тебе нравится, и напиши: «Сделай в таком же стиле, но про [моя тема]».</p></div>
+    </div>
+  </section>
+
+  <!-- ШАГ 3 -->
+  <section class="s" id="step3">
+    <div class="s__num">шаг 3</div>
+    <h2>Проекты: отдельная папка под <span class="sel">каждую задачу</span></h2>
+    <p>Это функция, которую новички часто пропускают, а зря. Она экономит больше всего времени.</p>
+    <p><strong>Проект</strong> — это как отдельный рабочий стол для одной задачи. Ты один раз кладёшь туда инструкции и нужные файлы, и Claude учитывает их в каждом новом чате внутри проекта. У каждого проекта своя память, отдельная от остальных.</p>
+
+    <h3>Зачем это нужно</h3>
+    <p>Без проекта каждый новый чат начинается с нуля: «я веду блог про…, моя аудитория…, пиши в таком тоне…». И так каждый раз.</p>
+    <p>С проектом ты рассказываешь всё один раз. Дальше просто пишешь «сделай пост про скидку на выходные», и Claude уже знает, о ком, для кого и каким голосом.</p>
+
+    <h3>Как создать проект</h3>
+    <ol class="nums">
+      <li>В меню слева нажми <strong>Проекты</strong> (Projects).</li>
+      <li>Нажми <strong>«+ Новый проект»</strong> (New Project) в правом верхнем углу.</li>
+      <li>Дай понятное название, например «Мой блог» или «Учёба».</li>
+      <li>Нажми <strong>«Инструкции проекта»</strong> (Set project instructions) и вставь шаблон ниже, заполнив его под себя.</li>
+      <li>Справа, в блоке знаний, нажми <strong>«+»</strong> и загрузи полезные файлы: примеры своих текстов, описание услуг, конспекты.</li>
+    </ol>
+    <p>На бесплатном тарифе можно создать до пяти проектов. Для старта этого более чем достаточно.</p>
+    <figure class="shot"><img src="img/shot-new-project.webp" alt="Создание нового проекта" loading="lazy"><figcaption>1 — «Новый проект», 2 — название, 3 — «Создать проект»</figcaption></figure>
+    <figure class="shot"><img src="img/shot-project-instructions.webp" alt="Инструкции проекта" loading="lazy"><figcaption>1 — вставь паспорт проекта, 2 — «Сохранить инструкции»</figcaption></figure>
+
+    <h3>Шаблон «Паспорт проекта»</h3>
+    <p>Скопируй и заполни под свою задачу:</p>
+    <div class="prompt"><div class="prompt__hd"><span>инструкции проекта</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">О ЧЁМ ЭТОТ ПРОЕКТ
+Здесь ты помогаешь мне с [задача: вести блог / готовиться к экзаменам / отвечать клиентам].
+
+ОБО МНЕ
+[Кто ты, чем занимаешься, 2–3 предложения.]
+
+ДЛЯ КОГО РЕЗУЛЬТАТ
+[Кто будет читать или пользоваться: возраст, интересы, что их волнует.]
+
+КАК ПИСАТЬ
+Тон: [тёплый / экспертный / дружеский / деловой].
+Обращение: [на «ты» / на «вы»].
+Никогда не используй: [канцелярит, пафос, штампы, конкретные слова].
+
+ЧТО ЛЕЖИТ В ФАЙЛАХ
+[Перечисли, что загрузил(а): примеры постов, прайс, конспекты.]
+
+ПРАВИЛО
+Опирайся на эти данные в каждом ответе. Если информации не хватает, сначала спроси меня.</div></div>
+
+    <h3>Пример «Помощник фрилансера»</h3>
+    <div class="prompt"><div class="prompt__hd"><span>инструкции проекта · пример</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Ты — мой личный ассистент.
+
+Я — [профессия], работаю на фрилансе.
+
+Правила:
+— Когда я присылаю сообщение клиента, помогай написать ответ: вежливо, коротко и по делу.
+— Когда прошу коммерческое предложение, используй мою схему: [задача клиента → решение → сроки → стоимость].
+— Когда прошу оценить задачу, сначала задай мне 3 уточняющих вопроса.</div></div>
+
+    <h3>Идеи для первого проекта</h3>
+    <div class="tbl"><table>
+      <tr><th>Если ты…</th><th>Проект</th><th>Что загрузить</th></tr>
+      <tr><td>ведёшь блог</td><td>«Контент»</td><td>5–10 своих лучших постов, описание аудитории</td></tr>
+      <tr><td>работаешь с клиентами</td><td>«Клиенты»</td><td>список услуг и цен, частые вопросы клиентов</td></tr>
+      <tr><td>учишься</td><td>«Учёба»</td><td>конспекты, программу курса, темы экзаменов</td></tr>
+      <tr><td>планируешь свою жизнь</td><td>«Личное»</td><td>цели на год, расписание, привычки, которые хочешь внедрить</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ШАГ 4 -->
+  <section class="s" id="step4">
+    <div class="s__num">шаг 4</div>
+    <h2>Файлы: Claude читает и <span class="sel">создаёт</span> документы</h2>
+    <p>Claude работает не только с текстом в чате. Он умеет читать твои файлы и собирать новые.</p>
+
+    <h3>Что можно загрузить</h3>
+    <p>Перетащи файл прямо в окно чата: PDF, Word, Excel, CSV, TXT, картинки и скриншоты (JPEG, PNG и другие).</p>
+    <p>Что с этим можно делать:</p>
+    <ul class="dots">
+      <li><strong>договор или инструкция</strong> → «объясни простыми словами, на что обратить внимание»;</li>
+      <li><strong>таблица с продажами</strong> → «найди, какие товары продаются лучше и хуже всего»;</li>
+      <li><strong>скриншот с ошибкой или непонятной настройкой</strong> → «что здесь не так и что нажать».</li>
+    </ul>
+    <div class="note"><div class="note__label">лимиты</div>В один чат можно загрузить до 20 файлов. Для файлов в проектах лимит — 30 МБ на файл.</div>
+
+    <h3>Что Claude может создать</h3>
+    <p>Claude соберёт для тебя готовый документ, который можно скачать:</p>
+    <div class="get" style="margin:10px 0 18px">
+      <div><span><strong>Таблицу Excel</strong> с формулами: бюджет, трекер, учёт клиентов</span></div>
+      <div><span><strong>Документ Word</strong> с заголовками и оглавлением</span></div>
+      <div><span><strong>Презентацию</strong> со слайдами</span></div>
+      <div><span><strong>PDF</strong></span></div>
+    </div>
+    <p>Просто попроси: «Сделай Excel-таблицу для учёта расходов по категориям, с итогами за месяц».</p>
+    <figure class="shot"><img src="img/shot-file.webp" alt="Claude собрал Excel-файл по одному запросу" loading="lazy"><figcaption>1 — промежуточные шаги: тут можно посмотреть, как Claude собирал файл. Сам готовый файл появится ниже, в конце ответа</figcaption></figure>
+  </section>
+
+  <!-- ШАГ 5 -->
+  <section class="s" id="step5">
+    <div class="s__num">шаг 5</div>
+    <h2>Скиллы: научи Claude <span class="sel">своим задачам</span></h2>
+    <p><strong>Скилл</strong> (навык) — это набор инструкций, который учит Claude выполнять конкретную работу по определённым правилам. Например, всегда оформлять документы в твоём стиле или проверять тексты по твоему чек-листу.</p>
+    <div class="note"><div class="note__label">главное отличие от проекта</div>Проект — это контекст для одной задачи, а скилл — умение, которое Claude может применить в любом чате, когда оно подходит по теме.</div>
+
+    <h3>Встроенные скиллы</h3>
+    <p>В Claude уже есть готовые навыки для работы с Excel, Word, PowerPoint и PDF. Проверь, что они включены:</p>
+    <ol class="nums">
+            <li>В меню слева открой <strong>Персонализация</strong> (Customize) → вкладка <strong>Skills</strong>.</li>
+      <li>Включи нужные навыки переключателем.</li>
+    </ol>
+    <figure class="shot"><img src="img/shot-skills.webp" alt="Персонализация → Skills" loading="lazy"><figcaption>1 — Персонализация, 2 — вкладка Skills, 3 — «Добавить», чтобы загрузить свой скилл</figcaption></figure>
+
+    <h3>Свои и чужие скиллы</h3>
+    <p>Скилл можно загрузить готовым архивом: <strong>Персонализация → Skills → «+ Добавить»</strong> и выбери загрузку скилла. Claude будет применять его сам, когда тема подходит, или можно прямо попросить: «используй мой скилл для презентаций».</p>
+    <p>Много полезной информации, скиллов и промптов будет также в моём <a href="https://t.me/fridmanlizaveta" target="_blank" rel="noopener">Telegram-канале</a>.</p>
+  </section>
+
+  <!-- БИБЛИОТЕКА -->
+  <section class="s lib" id="prompts">
+    <div class="s__num">библиотека</div>
+    <h2>Промпты: копируй и <span class="sel">пользуйся</span></h2>
+    <p>Девять заготовок на каждый день. Замени текст в [скобках] на своё и отправляй.</p>
+
+    <div class="lib__group">для себя</div>
+
+    <h3><span class="n">01</span>План на неделю без перегруза</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Помоги спланировать мою неделю.
+
+Что нужно сделать: [список всех дел и задач].
+Я свободен(на) для дел: [например, будни с 10 до 18].
+Самое важное на этой неделе: [одна главная цель].
+Обязательно оставь время на: [спорт / отдых / близких].
+
+Разложи задачи по дням, не больше 4 дел в день.
+Если неделя перегружена, отметь, какие задачи можно отложить, делегировать или упростить.</div></div>
+
+    <h3><span class="n">02</span>Разбор непонятного документа</h3>
+    <p>Загрузи файл и напиши:</p>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Это [договор / счёт / инструкция / письмо от банка].
+Объясни так, как объяснил бы другу без юридического образования:
+1. Суть документа в 3 предложениях.
+2. Что здесь самое важное для меня.
+3. Какие пункты могут быть невыгодными или рискованными.
+4. Какие вопросы мне стоит задать, прежде чем что-то подписывать.</div></div>
+    <div class="note"><div class="note__label">помни</div>Claude помогает разобраться, но не заменяет юриста. Серьёзные документы всё равно стоит показать специалисту.</div>
+
+    <h3><span class="n">03</span>Когда не можешь выбрать</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Не могу выбрать между: [вариант 1] и [вариант 2].
+Что для меня важно: [критерии: деньги, время, удобство, перспектива].
+Моя ситуация: [пара предложений контекста].
+
+Сравни варианты в таблице по критериям, важным в моей ситуации.
+Потом задай мне 2 вопроса, которые помогут принять решение.</div></div>
+
+    <div class="lib__group">для работы</div>
+
+    <h3><span class="n">04</span>Ответ на сложное сообщение</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Мне написали вот что: «[вставь сообщение]».
+Что было до этого: [коротко контекст].
+Чего я хочу добиться ответом: [сохранить клиента / мягко отказать / объяснить задержку].
+
+Напиши 2 варианта ответа: помягче и потвёрже.
+До 6 предложений, по-человечески, без канцелярита и лишних извинений.</div></div>
+
+    <h3><span class="n">05</span>Пост для соцсетей</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Ты сильный копирайтер для соцсетей.
+Напиши пост для [Instagram / Telegram / Threads] на тему: [тема].
+
+Кто я: [чем занимаешься].
+Кто читает: [твоя аудитория].
+Что читатель должен сделать после поста: [сохранить / написать в директ / перейти по ссылке].
+
+Первая фраза цепляет. Дальше 3–4 коротких абзаца по делу. В конце — призыв к действию.
+Тон: [какой]. Без фраз вроде «в современном мире» и «ни для кого не секрет».</div></div>
+
+    <h3><span class="n">06</span>Контент-план на неделю</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Составь контент-план на 7 дней для [площадка].
+Моя тема: [о чём блог]. Аудитория: [кто они и что их волнует].
+Цель на эту неделю: [набрать подписчиков / прогреть к продукту / повысить вовлечённость].
+
+Для каждого дня: формат (пост, карусель, reels, сторис), тема, главная мысль в одном предложении и цепляющий заголовок.
+Сделай так, чтобы темы не повторялись и подводили к цели.</div></div>
+
+    <div class="lib__group">для бизнеса</div>
+
+    <h3><span class="n">07</span>Взгляд на конкурентов</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Я занимаюсь: [твой бизнес или услуга].
+Мои конкуренты: [названия или ссылки, 3–5 штук].
+
+Разбери для каждого:
+— что они обещают клиенту;
+— что у них получается хорошо;
+— где у них слабое место.
+
+В конце предложи 3 идеи, чем я могу отличаться от них всех.</div></div>
+    <div class="note"><div class="note__label">совет</div>Чтобы Claude мог сам зайти на сайты конкурентов, у него должен быть включён поиск в интернете. Если поиска нет, вставь в чат тексты с их сайтов или страниц.</div>
+
+    <h3><span class="n">08</span>Ответы на возражения</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Я продаю: [продукт или услуга], цена: [сумма].
+Мои клиенты: [кто они].
+Чаще всего слышу: [возражение 1], [возражение 2], [возражение 3].
+
+На каждое возражение дай 2 ответа: для переписки и для разговора голосом.
+Без давления и манипуляций — только через пользу, честность и понятную логику.</div></div>
+
+    <h3><span class="n">09</span>Структура страницы для услуги</h3>
+    <div class="prompt"><div class="prompt__hd"><span>промпт</span><button class="copy" type="button">скопировать</button></div>
+<div class="prompt__bd">Ты копирайтер, который пишет продающие страницы для малого бизнеса.
+Мне нужна структура и текст одностраничного сайта.
+
+Что предлагаю: [услуга или продукт].
+Для кого: [клиенты и их главная проблема].
+Что человек должен сделать на странице: [оставить заявку / написать в Telegram].
+
+Блоки: заголовок с главной выгодой, кому подходит, что входит, как проходит работа, ответы на частые вопросы, призыв к действию.
+Не придумывай отзывы, цифры и факты обо мне — там, где нужны мои данные, оставь пометку [ЗАПОЛНИТЬ].</div></div>
+  </section>
+
+  <!-- ОШИБКИ -->
+  <section class="s" id="mistakes">
+    <div class="s__num">не делай так</div>
+    <h2>5 ошибок <span class="sel">новичка</span></h2>
+    <div class="mistakes">
+      <div class="mistake" data-n="1"><b>Сдаваться после первого ответа.</b><p>«ИИ пишет ерунду» обычно значит «я дал(а) ему слишком мало информации». Добавь контекст, попроси переделать.</p></div>
+      <div class="mistake" data-n="2"><b>Открывать новый чат на каждую правку.</b><p>В новом чате Claude не помнит, о чём вы говорили. Правки делай там же.</p></div>
+      <div class="mistake" data-n="3"><b>Слепо верить цифрам и фактам.</b><p>Claude может ошибаться, особенно в датах, ценах и свежих новостях. Важное всегда перепроверяй.</p></div>
+      <div class="mistake" data-n="4"><b>Отдавать личные данные без необходимости.</b><p>Не загружай пароли, номера карт и документы с паспортными данными. Для работы они не нужны.</p></div>
+      <div class="mistake" data-n="5"><b>Пытаться выучить всё сразу.</b><p>Начни с одной задачи, которую делаешь каждый день. Когда она начнёт получаться с Claude, бери следующую.</p></div>
+    </div>
+  </section>
+
+  <!-- ЧЕК-ЛИСТ -->
+  <section class="s" id="check">
+    <div class="s__num">проверь себя</div>
+    <h2>Чек-лист: ты <span class="sel">готов(а)</span></h2>
+    <div class="check">
+      <label><input type="checkbox"><span>Зарегистрировался(ась) на claude.ai</span></label>
+      <label><input type="checkbox"><span>Включил(а) память</span></label>
+      <label><input type="checkbox"><span>Отправил(а) Claude сообщение-знакомство</span></label>
+      <label><input type="checkbox"><span>Написал(а) хотя бы один запрос по формуле «Кто — Что — Для кого — Как — В каком виде»</span></label>
+      <label><input type="checkbox"><span>Попробовал(а) приём «задай мне вопросы»</span></label>
+      <label><input type="checkbox"><span>Создал(а) первый проект и заполнил(а) паспорт проекта</span></label>
+      <label><input type="checkbox"><span>Загрузил(а) в Claude файл или попросил(а) создать документ</span></label>
+      <label><input type="checkbox"><span>Сохранил(а) библиотеку промптов</span></label>
+    </div>
+    <p class="check__done" id="done" hidden>Отметил(а) всё? Поздравляю, база у тебя есть.</p>
+  </section>
+</div>
+
+<!-- ЧТО ДАЛЬШЕ -->
+<div class="wrap"><section class="final" id="next">
+  <div class="s__num">что дальше</div>
+  <h2>Дальше — система, а не отдельные запросы</h2>
+  <p>Сейчас ты умеешь главное: настраивать Claude, ставить задачи и работать в проектах. Этого уже хватит, чтобы снять с себя часть рутины.</p>
+  <p>Но настоящая магия начинается, когда отдельные запросы складываются в систему и Claude каждый день берёт на себя часть твоих задач: пишет в твоём стиле, держит в голове твои проекты, собирает документы за минуты.</p>
+  <p>Вот об этом я и рассказываю в своём <strong>Telegram-канале</strong>:</p>
+  <ul>
+    <li>бесплатные уроки по Claude и нейросетям;</li>
+    <li>промпты под конкретные задачи;</li>
+    <li>новинки ИИ простым языком, без перегруза;</li>
+    <li>самые свежие новости, мой путь и вся внутрянка моей ИИ-системы — в работе и жизни.</li>
+  </ul>
+  <div class="btns">
+    <a class="btn" href="https://t.me/fridmanlizaveta" target="_blank" rel="noopener">Подписаться на канал →</a>
+    <a class="btn btn--line" href="https://www.instagram.com/fridmanlizaveta/" target="_blank" rel="noopener">Instagram</a>
+  </div>
+  <p class="final__bye">Если что-то не получилось или остались вопросы, пиши мне в Telegram <a href="https://t.me/elizavetafridman" target="_blank" rel="noopener">@elizavetafridman</a>, разберёмся вместе.</p>
+  <p><strong>Елизавета Фридман · @fridmanlizaveta</strong></p>
+</section></div>
+
+<footer class="foot">
+  <small>Claude — продукт компании Anthropic. Этот гайд — личный материал fridmanlizaveta и не является официальным материалом Anthropic.</small>
+</footer>
+
+<script>
+// подсветка [того, что заменить] в промптах
+document.querySelectorAll('.prompt__bd').forEach(function (el) {
+  el.innerHTML = el.innerHTML.replace(/\[[^\]\n]+\]/g, function (m) { return '<mark>' + m + '</mark>'; });
+});
+// кнопка «скопировать»
+document.querySelectorAll('.copy').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var text = btn.closest('.prompt').querySelector('.prompt__bd').innerText.trim();
+    var done = function () {
+      btn.textContent = 'скопировано ✓'; btn.classList.add('ok');
+      setTimeout(function () { btn.textContent = 'скопировать'; btn.classList.remove('ok'); }, 1800);
+    };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done); }
+    else { var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+  });
+});
+// чек-лист: запоминается в браузере читателя
+(function () {
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input'));
+  var key = 'claude-s-nulya-check';
+  var saved = [];
+  try { saved = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
+  var update = function () {
+    var state = boxes.map(function (b) { return b.checked; });
+    try { localStorage.setItem(key, JSON.stringify(state)); } catch (e) {}
+    document.getElementById('done').hidden = !state.every(Boolean);
+  };
+  boxes.forEach(function (b, i) { b.checked = !!saved[i]; b.addEventListener('change', update); });
+  update();
+})();
+</script>
+</body>
+</html>
